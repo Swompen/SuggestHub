@@ -2,7 +2,7 @@
 
 A full-stack web application for community-driven suggestion and feedback management. Users can submit suggestions, vote on them, and administrators can manage suggestion statuses. Built with modern web technologies for a seamless user experience.
 
-![Project Preview]([https://via.placeholder.com/800x400/1f2937/ffffff?text=Voting+%26+Feedback+System](https://i.ibb.co/PZKcQSTR/asdasddas.png))
+![Project Preview]([[https://via.placeholder.com/800x400/1f2937/ffffff?text=Voting+%26+Feedback+System](https://i.ibb.co/PZKcQSTR/asdasddas.png)](https://i.ibb.co/PZKcQSTR/asdasddas.png))
 
 ## ✨ Features
 
