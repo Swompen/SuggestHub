@@ -19,7 +19,14 @@ export const AuthProvider = ({ children }) => {
   const [devMode, setDevMode] = useState(false);
 
   const isAuthenticated = !!user;
-  const isAdmin = user?.isAdmin || (devMode && user?.id === 'dev_user_123');
+
+  const canVote = () => {
+    return user?.canVote || false;
+  };
+
+  const isAdmin = () => {
+    return user?.isAdmin || false;
+  };
 
   // Check if we're in development mode
   useEffect(() => {
@@ -113,6 +120,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     checkAuthStatus,
     isAuthenticated,
+    canVote,
     isAdmin,
     devMode
   };

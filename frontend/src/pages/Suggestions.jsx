@@ -8,7 +8,7 @@ import { suggestionsApi, votingApi } from '../services/api';
 import Header from '../components/Header';
 
 const Suggestions = () => {
-  const { user, isAuthenticated, isAdmin, loading: authLoading, devMode } = useAuth();
+  const { user, isAuthenticated, canVote, isAdmin, loading: authLoading, devMode } = useAuth();
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -350,11 +350,11 @@ const SuggestionCard = ({
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onVote(suggestion.id, 1)}
-            disabled={!isAuthenticated}
+            disabled={!canVote()}
             className={`flex items-center space-x-1 px-3 py-1 rounded ${
               userVoteValue === 1
                 ? 'bg-green-600 text-white'
-                : isAuthenticated
+                : canVote()
                   ? 'bg-gray-600 hover:bg-gray-500 text-white'
                   : 'bg-gray-600 text-gray-500 cursor-not-allowed'
             } transition-colors duration-200`}
@@ -364,11 +364,11 @@ const SuggestionCard = ({
           </button>
           <button
             onClick={() => onVote(suggestion.id, -1)}
-            disabled={!isAuthenticated}
+            disabled={!canVote()}
             className={`flex items-center space-x-1 px-3 py-1 rounded ${
               userVoteValue === -1
                 ? 'bg-red-600 text-white'
-                : isAuthenticated
+                : canVote()
                   ? 'bg-gray-600 hover:bg-gray-500 text-white'
                   : 'bg-gray-600 text-gray-500 cursor-not-allowed'
             } transition-colors duration-200`}

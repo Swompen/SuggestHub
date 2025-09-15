@@ -11,9 +11,15 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const DEV_MODE = process.env.DEV_MODE === 'true';
 
+// Role configuration
+const VOTER_ROLES = process.env.VOTER_ROLES ? process.env.VOTER_ROLES.split(',').map(r => r.trim()) : [];
+const ADMIN_ROLES = process.env.ADMIN_ROLES ? process.env.ADMIN_ROLES.split(',').map(r => r.trim()) : [];
+
 console.log('DEV_MODE environment variable:', process.env.DEV_MODE);
 console.log('DEV_MODE boolean value:', DEV_MODE);
 console.log(`Server starting in ${DEV_MODE ? 'DEVELOPMENT' : 'PRODUCTION'} mode`);
+console.log('Voter roles:', VOTER_ROLES);
+console.log('Admin roles:', ADMIN_ROLES);
 
 // Middleware
 app.use(cors({
@@ -37,6 +43,45 @@ app.use(session({
 // Passport configuration
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Role checking functions
+function hasRole(user, requiredRoles) {
+  if (!user || !user.roles) return false;
+  if (DEV_MODE) return true; // In dev mode, allow everything
+  return requiredRoles.some(role => user.roles.includes(role));
+}
+
+function canVote(user) {
+  return hasRole(user, VOTER_ROLES) || hasRole(user, ADMIN_ROLES);
+}
+
+function isAdmin(user) {
+  return hasRole(user, ADMIN_ROLES);
+}
+
+// Middleware to check authentication
+function requireAuth(req, res, next) {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+  next();
+}
+
+// Middleware to check voting permissions
+function requireVotingPermission(req, res, next) {
+  if (!canVote(req.session.user)) {
+    return res.status(403).json({ error: 'Insufficient permissions to vote' });
+  }
+  next();
+}
+
+// Middleware to check admin permissions
+function requireAdminPermission(req, res, next) {
+  if (!isAdmin(req.session.user)) {
+    return res.status(403).json({ error: 'Admin permissions required' });
+  }
+  next();
+}
 
 // Routes
 app.get('/api/health', (req, res) => {
@@ -70,7 +115,7 @@ app.get('/api/suggestions/:id', async (req, res) => {
   }
 });
 
-app.post('/api/suggestions', async (req, res) => {
+app.post('/api/suggestions', requireVotingPermission, async (req, res) => {
   try {
     const db = await getDatabase();
     const { title, description, authorId, authorName } = req.body;
@@ -94,7 +139,7 @@ app.post('/api/suggestions', async (req, res) => {
   }
 });
 
-app.patch('/api/suggestions/:id', async (req, res) => {
+app.patch('/api/suggestions/:id', requireAdminPermission, async (req, res) => {
   try {
     const db = await getDatabase();
     const { id } = req.params;
@@ -112,7 +157,7 @@ app.patch('/api/suggestions/:id', async (req, res) => {
   }
 });
 
-app.put('/api/suggestions/:id/vote', async (req, res) => {
+app.put('/api/suggestions/:id/vote', requireVotingPermission, async (req, res) => {
   try {
     const db = await getDatabase();
     const { id } = req.params;
@@ -148,7 +193,7 @@ if (DEV_MODE) {
     discriminator: '0001',
     avatar: null,
     email: 'dev@example.com',
-    isAdmin: true
+    roles: ['111111111111111111', '222222222222222222', '123456789012345678'] // Mock role IDs for testing
   };
 
   app.get('/auth/discord', (req, res) => {
@@ -168,7 +213,13 @@ if (DEV_MODE) {
 
   app.get('/auth/user', (req, res) => {
     if (req.session.user) {
-      res.json(req.session.user);
+      // Add permission flags to the user object
+      const userWithPermissions = {
+        ...req.session.user,
+        canVote: canVote(req.session.user),
+        isAdmin: isAdmin(req.session.user)
+      };
+      res.json(userWithPermissions);
     } else {
       res.status(401).json({ error: 'Not authenticated' });
     }

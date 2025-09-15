@@ -6,7 +6,7 @@ const CreateSuggestion = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const navigate = useNavigate();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading, canVote } = useAuth();
 
   const insertAtCursor = (before, after = '') => {
     const textarea = document.getElementById('description');
@@ -32,10 +32,10 @@ const CreateSuggestion = () => {
   const insertHeader = () => insertAtCursor('## ', '');
 
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
+    if (!authLoading && (!isAuthenticated || !canVote())) {
       navigate('/login');
     }
-  }, [isAuthenticated, authLoading, navigate]);
+  }, [isAuthenticated, authLoading, canVote, navigate]);
 
   const submit = async (e) => {
     e.preventDefault();

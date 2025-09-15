@@ -62,8 +62,8 @@ Before running this application, make sure you have:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/voting-feedback-system.git
-cd voting-feedback-system
+git clone https://github.com/Swompen/SuggestHub.git
+cd SuggestHub
 ```
 
 ### 2. Backend Setup

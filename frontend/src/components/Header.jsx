@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
-  const { user, isAuthenticated, logout, isAdmin } = useAuth();
+  const { user, isAuthenticated, logout, isAdmin, canVote } = useAuth();
 
   return (
     <header className="bg-gray-800 border-b border-gray-700 px-4 py-3">
@@ -11,7 +11,7 @@ const Header = () => {
           <Link to="/" className="text-xl font-bold text-white">
             Voting & Feedback
           </Link>
-          {isAuthenticated && (
+          {isAuthenticated && canVote() && (
             <Link
               to="/create"
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
