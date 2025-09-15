@@ -178,6 +178,7 @@ const Suggestions = () => {
                     showAdminPanel={adminPanels[suggestion.id]}
                     isAuthenticated={isAuthenticated}
                     isAdmin={isAdmin}
+                    canVote={canVote}
                     user={user}
                     adminErrors={adminErrors}
                     devMode={devMode}
@@ -205,6 +206,7 @@ const Suggestions = () => {
                     showAdminPanel={adminPanels[suggestion.id]}
                     isAuthenticated={isAuthenticated}
                     isAdmin={isAdmin}
+                    canVote={canVote}
                     user={user}
                     adminErrors={adminErrors}
                     devMode={devMode}
@@ -232,6 +234,7 @@ const Suggestions = () => {
                     showAdminPanel={adminPanels[suggestion.id]}
                     isAuthenticated={isAuthenticated}
                     isAdmin={isAdmin}
+                    canVote={canVote}
                     user={user}
                     adminErrors={adminErrors}
                     devMode={devMode}
@@ -259,6 +262,7 @@ const Suggestions = () => {
                     showAdminPanel={adminPanels[suggestion.id]}
                     isAuthenticated={isAuthenticated}
                     isAdmin={isAdmin}
+                    canVote={canVote}
                     user={user}
                     adminErrors={adminErrors}
                     devMode={devMode}
@@ -282,6 +286,7 @@ const SuggestionCard = ({
   showAdminPanel,
   isAuthenticated,
   isAdmin,
+  canVote,
   user,
   adminErrors,
   devMode
@@ -350,11 +355,11 @@ const SuggestionCard = ({
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onVote(suggestion.id, 1)}
-            disabled={!canVote()}
+            disabled={!canVote}
             className={`flex items-center space-x-1 px-3 py-1 rounded ${
               userVoteValue === 1
                 ? 'bg-green-600 text-white'
-                : canVote()
+                : canVote
                   ? 'bg-gray-600 hover:bg-gray-500 text-white'
                   : 'bg-gray-600 text-gray-500 cursor-not-allowed'
             } transition-colors duration-200`}
@@ -364,11 +369,11 @@ const SuggestionCard = ({
           </button>
           <button
             onClick={() => onVote(suggestion.id, -1)}
-            disabled={!canVote()}
+            disabled={!canVote}
             className={`flex items-center space-x-1 px-3 py-1 rounded ${
               userVoteValue === -1
                 ? 'bg-red-600 text-white'
-                : canVote()
+                : canVote
                   ? 'bg-gray-600 hover:bg-gray-500 text-white'
                   : 'bg-gray-600 text-gray-500 cursor-not-allowed'
             } transition-colors duration-200`}

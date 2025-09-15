@@ -84,10 +84,9 @@ export const AuthProvider = ({ children }) => {
         console.log('Dev login response:', response.data);
 
         if (response.data.success) {
-          // Login successful, update user state
-          setUser(response.data.user);
-          setLoading(false);
-          console.log('User logged in:', response.data.user);
+          // Login successful, now get the user with permissions from /auth/user
+          await checkAuthStatus();
+          console.log('Dev login successful');
         } else {
           console.error('Dev login failed:', response.data);
         }
@@ -120,8 +119,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     checkAuthStatus,
     isAuthenticated,
-    canVote,
-    isAdmin,
+    canVote: canVote(),
+    isAdmin: isAdmin(),
     devMode
   };
 

@@ -32,7 +32,7 @@ const CreateSuggestion = () => {
   const insertHeader = () => insertAtCursor('## ', '');
 
   useEffect(() => {
-    if (!authLoading && (!isAuthenticated || !canVote())) {
+    if (!authLoading && (!isAuthenticated || !canVote)) {
       navigate('/login');
     }
   }, [isAuthenticated, authLoading, canVote, navigate]);
